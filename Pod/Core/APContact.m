@@ -7,7 +7,7 @@
 //
 
 #import "APContact.h"
-#import "APPhoneWithLabel.h"
+#import "APValueWithLabel.h"
 #import "APAddress.h"
 #import "APSocialProfile.h"
 
@@ -51,7 +51,11 @@
         }
         if (fieldMask & APContactFieldPhonesWithLabels)
         {
-            _phonesWithLabels = [self arrayOfPhonesWithLabelsFromRecord:recordRef];
+            _phonesWithLabels = [self arrayOfValuesWithLabelsForProperty:kABPersonPhoneProperty fromRecord:recordRef];
+        }
+        if (fieldMask & APContactFieldEmailsWithLabels)
+        {
+            _emailsWithLabels = [self arrayOfValuesWithLabelsForProperty:kABPersonEmailProperty fromRecord:recordRef];
         }
         if (fieldMask & APContactFieldEmails)
         {
@@ -156,21 +160,21 @@
     return (__bridge_transfer NSDate *)dateRef;
 }
 
-- (NSArray *)arrayOfPhonesWithLabelsFromRecord:(ABRecordRef)recordRef
+- (NSArray *)arrayOfValuesWithLabelsForProperty:(ABPropertyID)property fromRecord:(ABRecordRef)recordRef
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    [self enumerateMultiValueOfProperty:kABPersonPhoneProperty fromRecord:recordRef
+    [self enumerateMultiValueOfProperty:property fromRecord:recordRef
                               withBlock:^(ABMultiValueRef multiValue, NSUInteger index)
     {
         CFTypeRef rawPhone = ABMultiValueCopyValueAtIndex(multiValue, index);
-        NSString *phone = (__bridge_transfer NSString *)rawPhone;
-        if (phone)
+        NSString *string = (__bridge_transfer NSString *)rawPhone;
+        if (string)
         {
             NSString *originalLabel = [self originalLabelFromMultiValue:multiValue index:index];
             NSString *localizedLabel = [self localizedLabelFromMultiValue:multiValue index:index];
-            APPhoneWithLabel *phoneWithLabel = [[APPhoneWithLabel alloc] initWithPhone:phone originalLabel:originalLabel
+            APValueWithLabel *valueWithLabel = [[APValueWithLabel alloc] initWithValue:string originalLabel:originalLabel
                                                                         localizedLabel:localizedLabel];
-            [array addObject:phoneWithLabel];
+            [array addObject:valueWithLabel];
         }
     }];
     return array.copy;
@@ -218,15 +222,12 @@
                             withBlock:(void (^)(ABMultiValueRef multiValue, NSUInteger index))block
 {
     ABMultiValueRef multiValue = ABRecordCopyValue(recordRef, property);
-    if (multiValue)
+    NSUInteger count = (NSUInteger)ABMultiValueGetCount(multiValue);
+    for (NSUInteger i = 0; i < count; i++)
     {
-        NSUInteger count = (NSUInteger)ABMultiValueGetCount(multiValue);
-        for (NSUInteger i = 0; i < count; i++)
-        {
-            block(multiValue, i);
-        }
-        CFRelease(multiValue);
+        block(multiValue, i);
     }
+    CFRelease(multiValue);
 }
 
 @end

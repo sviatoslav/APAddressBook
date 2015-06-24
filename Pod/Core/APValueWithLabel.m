@@ -6,18 +6,18 @@
 //  Copyright (c) 2014 alterplay. All rights reserved.
 //
 
-#import "APPhoneWithLabel.h"
+#import "APValueWithLabel.h"
 
-@implementation APPhoneWithLabel
+@implementation APValueWithLabel
 
 #pragma mark - life cycle
 
-- (id)initWithPhone:(NSString *)phone originalLabel:(NSString *)originalLabel localizedLabel:(NSString *)localizedLabel
+- (id)initWithValue:(NSString *)value originalLabel:(NSString *)originalLabel localizedLabel:(NSString *)localizedLabel
 {
     self = [super init];
     if (self)
     {
-        _phone = phone;
+        _value = value;
         _localizedLabel = localizedLabel;
         _originalLabel = originalLabel;
     }
@@ -35,7 +35,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@ (%@) - %@", self.localizedLabel, self.originalLabel, self.phone];
+    return [NSString stringWithFormat:@"%@ (%@) - %@", self.localizedLabel, self.originalLabel, self.value];
 }
 
 @end
