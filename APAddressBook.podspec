@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/Alterplay/APAddressBook"
   s.license      = { :type => 'MIT', :file => 'LICENSE.txt' }
   s.author       = { "Alexey Belkevich" => "belkevich.alexey@gmail.com" }
-  s.source       = { :git => "https://github.com/Alterplay/APAddressBook.git",
+  s.source       = { :git => "https://github.com/sviatoslav/APAddressBook.git",
 		                 :tag => s.version.to_s }
   s.requires_arc = true
   s.frameworks   = 'AddressBook'
