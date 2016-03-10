@@ -184,7 +184,7 @@
 {
     ABPersonImageFormat format = isFullSize ? kABPersonImageFormatOriginalSize :
                                  kABPersonImageFormatThumbnail;
-    NSData *data = (__bridge_transfer NSData *)ABPersonCopyImageDataWithFormat(recordRef, format);
+    NSData *data = CFBridgingRelease(ABPersonCopyImageDataWithFormat(recordRef, format));
     return [UIImage imageWithData:data scale:UIScreen.mainScreen.scale];
 }
 
